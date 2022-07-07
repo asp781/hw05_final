@@ -11,8 +11,7 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
               Дата публикации: {{ post.pub_date|date:"d E Y" }} 
-            </li>            
-            <!-- если у поста есть группа -->   
+            </li>              
             {% if post.group %}  
             <li class="list-group-item">
                 Группа: {{ post.group.title }}            

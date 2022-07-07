@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-  {% comment %} {% load cache %}    {% endcomment %}
+{% extends 'base.html' %}  
   {% block title %}
     Последние обновления на сайте
   {% endblock %}    
@@ -9,9 +8,7 @@
       <div class="container">        
         <h1>Последние обновления сайта</h1>
         <article>
-          {% include 'posts/includes/switcher.html' %}
-          <!-- Кеширование-->                    
-          {% comment %} {% cache 20 index_page %} {% endcomment %}
+          {% include 'posts/includes/switcher.html' %}          
           {% for post in page_obj %}  
             {% include 'posts/includes/single_post.html' %}            
             <br>
@@ -21,9 +18,7 @@
               </a>
             {% endif %}
             {% if not forloop.last %}<hr>{% endif %}
-          {% endfor %}
-          {% comment %} {% endcache %} {% endcomment %}
-          <!-- Кеширование-->
+          {% endfor %}          
           {% include 'posts/includes/paginator.html' %}
         </article>        
       </div>
