@@ -1,0 +1,12 @@
+{% for field in form %}
+<div class="form-group row my-3 p-3">
+  <label for="id_text">
+    {{ field.label }}
+    {% if field.label == 'Текст поста' %}<span class="required text-danger" >*</span>{% endif %}
+  </label>
+  {{ field }}                                 
+  <small id="id_text-help" class="form-text text-muted">
+    {{ field.help_text }}
+  </small>                  
+</div>
+{% endfor %}

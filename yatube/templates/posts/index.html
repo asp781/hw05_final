@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+  {% comment %} {% load cache %}    {% endcomment %}
+  {% block title %}
+    Последние обновления на сайте
+  {% endblock %}    
+  <body>
+    <main>
+      {% block content %}
+      <div class="container">        
+        <h1>Последние обновления сайта</h1>
+        <article>
+          {% include 'posts/includes/switcher.html' %}
+          <!-- Кеширование-->                    
+          {% comment %} {% cache 20 index_page %} {% endcomment %}
+          {% for post in page_obj %}  
+            {% include 'posts/includes/single_post.html' %}            
+            <br>
+            {% if post.group %}
+              <a href="{% url 'posts:group_list' post.group.slug %}">
+                все записи группы {{ post.group.title }}
+              </a>
+            {% endif %}
+            {% if not forloop.last %}<hr>{% endif %}
+          {% endfor %}
+          {% comment %} {% endcache %} {% endcomment %}
+          <!-- Кеширование-->
+          {% include 'posts/includes/paginator.html' %}
+        </article>        
+      </div>
+      {% endblock %}
+    </main> 
+  </body>
