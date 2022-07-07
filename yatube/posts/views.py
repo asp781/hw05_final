@@ -38,14 +38,11 @@ def profile(request, username):
         ).exists()
     else:
         following = False
-    profile = user
     context = {
         'author': user,
         'posts': post_list,
         'page_obj': paginator(post_list, request),
         'following': following,
-        'profile': profile,
-        'is_profile': True,
     }
     return render(request, 'posts/profile.html', context)
 
