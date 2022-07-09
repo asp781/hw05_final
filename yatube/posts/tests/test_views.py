@@ -65,8 +65,7 @@ class PostPagesTests(TestCase):
             cls.INDEX, cls.GROUP, cls.PROFILE, cls.POST_DETAIL, cls.POST_EDIT,
             cls.POST_CREATE,
         )
-        cls.post_list = (cls.INDEX,
-                         cls.GROUP, cls.PROFILE,)
+        cls.post_list = (cls.INDEX, cls.GROUP, cls.PROFILE,)
 
     @classmethod
     def tearDownClass(cls):
@@ -250,19 +249,22 @@ class FollowTests(TestCase):
         cls.PROFILE_UNFOLLOW = (
             'posts:profile_unfollow', [cls.user_following.username]
         )
+        cls.FOLLOW = ('posts:follow_index', None)
 
     def setUp(self):
         self.client_follower = Client()
         self.client_follower.force_login(self.user_follower)
-        self.client_following = Client()
-        self.client_following.force_login(self.user_following)
         self.client_not_follower = Client()
         self.client_not_follower.force_login(self.user_not_follower)
+        self.guest_client = Client()
 
-    def test_follow_and_unfollow(self):
-        """Авторизованный пользователь может подписаться и отписаться"""
+    def test_follow(self):
+        """Авторизованный пользователь может подписаться"""
         self.client_follower.get(name_to_url(self.PROFILE_FOLLOW))
         self.assertEqual(Follow.objects.all().count(), 1)
+
+    def test_unfollow(self):
+        """Авторизованный пользователь может отписаться"""
         self.client_follower.get(name_to_url(self.PROFILE_UNFOLLOW))
         self.assertEqual(Follow.objects.all().count(), 0)
 
@@ -270,11 +272,16 @@ class FollowTests(TestCase):
         """Запись появляется в ленте Избранные авторы"""
         Follow.objects.create(user=self.user_follower,
                               author=self.user_following)
-        response = self.client_follower.get('/follow/')
+        response = self.client_follower.get(name_to_url(self.FOLLOW))
         post = response.context['page_obj'][0]
         self.assertEqual(post.text, self.post.text)
-        response = self.client_not_follower.get('/follow/')
+        response = self.client_not_follower.get(name_to_url(self.FOLLOW))
         self.assertNotContains(response, self.post.text)
+
+    def test_follow_for_guest_client(self):
+        """Неавторизованный пользователь не может подписаться"""
+        self.guest_client.get(name_to_url(self.PROFILE_FOLLOW))
+        self.assertEqual(Follow.objects.all().count(), 0)
 
 
 class CommentTests(TestCase):
